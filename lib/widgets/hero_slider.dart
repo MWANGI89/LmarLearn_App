@@ -140,7 +140,7 @@ class _HeroSliderState extends State<HeroSlider> with SingleTickerProviderStateM
                           image: AssetImage(slide['image']!),
                           fit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.45),
+                            Colors.black.withAlpha((0.45 * 255).round()),
                             BlendMode.darken,
                           ),
                         ),
