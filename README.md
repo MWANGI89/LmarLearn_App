@@ -49,7 +49,34 @@ Contributions are welcome! Please follow these steps to contribute:
 
 
 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License
+Lmar Learn is licensed under the MIT License.
+
+A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
+
+Permissions
+-Commercial use
+-Modification
+-Distribution
+-Private use
+
+Limitations
+-Liability
+-Warranty
+
+Conditions
+-License and copyright notice must be preserved.
+
+For more details, please refer to the LICENSE file.
+
+Contributing
+Contributions are welcome! Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch (git checkout -b feature/YourFeature).
+3. Make your changes and commit them (git commit -m 'Add some feature').
+4. Push to the branch (git push origin feature/YourFeature).
+5. Open a Pull Request.
 
 Contact
 For any inquiries or feedback, please reach out to:
