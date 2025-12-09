@@ -95,14 +95,14 @@ class _CourseCardState extends State<CourseCard>
                 border: Border.all(
                   width: 2,
                   color: hover
-                      ? Colors.blueAccent.withOpacity(0.6)
+                      ? Colors.blueAccent.withAlpha((0.6 * 255).round())
                       : Colors.transparent,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: hover
-                        ? Colors.blueAccent.withOpacity(0.4)
-                        : Colors.black.withOpacity(0.08),
+                        ? Colors.blueAccent.withAlpha((0.4 * 255).round())
+                        : Colors.black.withAlpha((0.08 * 255).round()),
                     blurRadius: hover ? 25 : 10,
                     spreadRadius: hover ? 2 : 1,
                     offset: const Offset(0, 8),
@@ -149,20 +149,20 @@ class _CourseCardState extends State<CourseCard>
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withAlpha((0.8 * 255).round()),
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
                                     color: bookmarked
-                                        ? Colors.blueAccent.withOpacity(0.5)
-                                        : Colors.black.withOpacity(0.2),
+                                        ? Colors.blueAccent.withAlpha((0.5 * 255).round())
+                                        : Colors.black.withAlpha((0.2 * 255).round()),
                                     blurRadius: 12,
                                   ),
                                 ],
                               ),
                               child: AnimatedBuilder(
                                 animation: glowController,
-                                builder: (_, __) {
+                                builder: (_, _) {
                                   final glow = bookmarked ? glowController.value * 6 : 0;
                                   return Icon(
                                     bookmarked
