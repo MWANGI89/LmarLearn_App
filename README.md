@@ -59,30 +59,3 @@ Company: Ellines Tech
 Website: ellinestech.co.ke
 Email: support@ellinestech.co.ke
 
-
-### Instructions for Adding the Files
-
-1. **Create the LICENSE File:**
-   - In your project directory, create a file named `LICENSE` and paste the license text into it.
-
-2. **Create or Update the README.md File:**
-   - If you already have a `README.md` file, replace its content with the updated version above. If not, create a new file named `README.md` and paste the content.
-
-3. **Save Both Files:**
-   - Save the changes to both files.
-
-4. **Stage and Commit the Files:**
-   - Stage the new `LICENSE` and updated `README.md` files:
-     ```bash
-     git add LICENSE README.md
-     ```
-   - Commit the changes:
-     ```bash
-     git commit -m "Add LICENSE and update README with app details"
-     ```
-
-5. **Push to GitHub:**
-   - Push the changes to the remote repository:
-     ```bash
-     git push origin main
-     ```
