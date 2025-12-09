@@ -56,7 +56,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any inquiries or feedback, please reach out to [Elijah Mwangi Mutiso](mailto:support@ellinestech.co.ke).
+For any inquiries or feedback, please reach out to [Elijah Mwangi Mutiso(Ellines Tech Founder)](mailto:support@ellinestech.co.ke).
 ```
 
 ### Instructions for Adding the `README.md`
