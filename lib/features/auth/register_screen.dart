@@ -35,6 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
+
     try {
       final user = await _authService.signUp(
         email: _emailController.text.trim(),
@@ -44,6 +45,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         schoolName: _schoolName,
         schoolId: _schoolId,
       );
+
+      if (!mounted) return;
 
       if (user != null) {
         final appUser = AppUser(
@@ -72,7 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             route = '/home';
         }
 
-        if (!mounted) return;
         Navigator.pushReplacementNamed(
           context,
           route,
@@ -80,8 +82,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -89,70 +93,204 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isMobile = size.width < 600;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (val) => val!.isEmpty ? 'Enter your name' : null,
+      body: Stack(
+        children: [
+          // Background gradient
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blueAccent, Colors.lightBlueAccent.shade100],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (val) => val!.isEmpty ? 'Enter email' : null,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Password too short' : null,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: _role,
-                decoration: const InputDecoration(labelText: 'Role'),
-                items: ['student', 'lecturer', 'admin', 'superadmin']
-                    .map((role) => DropdownMenuItem(
-                          value: role,
-                          child: Text(role.toUpperCase()),
-                        ))
-                    .toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _role = val);
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'School Name'),
-                onChanged: (val) => _schoolName = val,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'School ID'),
-                onChanged: (val) => _schoolId = val,
-              ),
-              const SizedBox(height: 24),
-              _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48),
-                      ),
-                      child: const Text('Register'),
-                    ),
-            ],
+            ),
           ),
-        ),
+
+          // Back button
+          SafeArea(
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+            ),
+          ),
+
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              child: Card(
+                elevation: 16,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(28),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo
+                      Image.asset(
+                        'assets/logo/Lmar_Logo_icon-nobg.png',
+                        height: 60,
+                      ),
+                      const SizedBox(height: 16),
+
+                      Text(
+                        "Create Account",
+                        style: TextStyle(
+                          fontSize: isMobile ? 24 : 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      const Text(
+                        "Register to access your dashboard",
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 30),
+
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                labelText: 'Full Name',
+                                prefixIcon: const Icon(Icons.person),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              validator: (val) =>
+                                  val!.isEmpty ? 'Enter your name' : null,
+                            ),
+                            const SizedBox(height: 16),
+
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: const Icon(Icons.email),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              validator: (val) =>
+                                  val!.isEmpty ? 'Enter email' : null,
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                            const SizedBox(height: 16),
+
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: const Icon(Icons.lock),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              obscureText: true,
+                              validator: (val) =>
+                                  val!.length < 6 ? 'Password must be at least 6 characters' : null,
+                            ),
+                            const SizedBox(height: 16),
+
+                            DropdownButtonFormField<String>(
+                              initialValue: _role,
+                              decoration: InputDecoration(
+                                labelText: 'Role',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              items: ['student', 'lecturer', 'admin', 'superadmin']
+                                  .map((role) => DropdownMenuItem(
+                                        value: role,
+                                        child: Text(role.toUpperCase()),
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => _role = val);
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 16),
+
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'School Name',
+                                prefixIcon: const Icon(Icons.school),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onChanged: (val) => _schoolName = val,
+                            ),
+                            const SizedBox(height: 16),
+
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'School ID',
+                                prefixIcon: const Icon(Icons.confirmation_number),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onChanged: (val) => _schoolId = val,
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: _loading
+                                  ? const Center(child: CircularProgressIndicator())
+                                  : ElevatedButton(
+                                      onPressed: _register,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blueAccent,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Register',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Already have an account?'),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pushReplacementNamed(context, '/login'),
+                            child: const Text('Login'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

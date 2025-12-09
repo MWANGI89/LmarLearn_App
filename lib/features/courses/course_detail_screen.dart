@@ -40,7 +40,8 @@ class CourseDetailScreen extends StatelessWidget {
                     children: [
                       Chip(
                         label: Text(course.level ?? 'Beginner'),
-                        backgroundColor: Colors.blueAccent.withOpacity(.2),
+                        // Fixed: replaced with withAlpha
+                        backgroundColor: Colors.blueAccent.withAlpha((0.2 * 255).round()),
                       ),
                       const SizedBox(width: 12),
                       Text("${course.enrollmentCount} enrolled"),

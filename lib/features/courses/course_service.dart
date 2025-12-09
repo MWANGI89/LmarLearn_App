@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/features/courses/course.dart';
 
@@ -9,7 +10,7 @@ class CourseService {
     return snap.docs.map((d) => Course.fromMap(d.id, d.data())).toList();
   }
 
-  /// NEW METHOD: Get number of students enrolled in a course
+  /// Get number of students enrolled in a course
   Future<int> getEnrolledStudentsCount(String courseId) async {
     try {
       final snapshot = await _db
@@ -17,8 +18,8 @@ class CourseService {
           .where('courseId', isEqualTo: courseId)
           .get();
       return snapshot.docs.length;
-    } catch (e) {
-      print('Error fetching enrolled students count: $e');
+    } catch (e, stackTrace) {
+      log('Error fetching enrolled students count: $e', stackTrace: stackTrace);
       return 0;
     }
   }

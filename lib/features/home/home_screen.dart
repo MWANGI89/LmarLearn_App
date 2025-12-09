@@ -308,12 +308,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () => Navigator.pushNamed(context, '/'),
                             child: const Text('Home'),
                           ),
-                          TextButton(
-                            onPressed: () {},
+                          ElevatedButton(
+                            onPressed: () => Navigator.pushNamed(context, '/courses'),
                             child: const Text('Courses'),
                           ),
                           const SizedBox(width: 5),
@@ -323,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: const Text('Login'),
                             ),
                             const SizedBox(width: 5),
-                            OutlinedButton(
+                            ElevatedButton(
                               onPressed: () => Navigator.pushNamed(context, '/sign-up'),
                               child: const Text('Sign Up'),
                             ),
