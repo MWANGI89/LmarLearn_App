@@ -1,4 +1,3 @@
-
 # Lmar Learn
 
 Lmar Learn is an innovative online learning application designed for schools to facilitate effective learning experiences. This app provides interactive lessons, assessments, and resources to enhance student engagement and academic performance.
@@ -17,67 +16,69 @@ To set up Lmar Learn locally, follow these steps:
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/MWANGI89/LmarLearn_App.git
+   
+2. Navigate to the Project Directory:
 
+    Copy
+    cd LmarLearn_App
+3. Install Dependencies:
 
-2. **Navigate to the Project Directory:**
-   ```bash
-   cd LmarLearn_App
-   ```
+    If you are using Node.js, run:
+    Copy
+    npm install
+4. Start the Application:
 
-3. **Install Dependencies:**
-   - If you are using Node.js, run:
-     ```bash
-     npm install
-     ```
+    Run the application locally:
+    Copy
+    npm start
 
-4. **Start the Application:**
-   - Run the application locally:
-     ```bash
-     npm start
-     ```
+Usage
+-Open your web browser and navigate to http://localhost:3000 (or the port specified in your application) to access the app.
 
-## Usage
+App Version
+Version: 1.0.0 (First Release)
 
-- Open your web browser and navigate to `http://localhost:3000` (or the port specified in your application) to access the app.
-
-## Contributing
-
+Contributing
 Contributions are welcome! Please follow these steps to contribute:
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Make your changes and commit them (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a Pull Request.
+-Fork the repository.
+-Create a new branch (git checkout -b feature/YourFeature).
+-Make your changes and commit them (git commit -m 'Add some feature').
+-Push to the branch (git push origin feature/YourFeature).
+-Open a Pull Request.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact
+Contact
+For any inquiries or feedback, please reach out to:
 
-For any inquiries or feedback, please reach out to [Elijah Mwangi Mutiso(Ellines Tech Founder)](mailto:support@ellinestech.co.ke).
-```
+Name: Elijah Mwangi Mutiso
+Company: Ellines Tech
+Website: ellinestech.co.ke
+Email: support@ellinestech.co.ke
 
-### Instructions for Adding the `README.md`
 
-1. **Create the README File:**
-   - In your project directory, create a file named `README.md`.
+### Instructions for Adding the Files
 
-2. **Copy and Paste the Content:**
-   - Copy the above content and paste it into your `README.md` file.
+1. **Create the LICENSE File:**
+   - In your project directory, create a file named `LICENSE` and paste the license text into it.
 
-3. **Save the File:**
-   - Save the changes.
+2. **Create or Update the README.md File:**
+   - If you already have a `README.md` file, replace its content with the updated version above. If not, create a new file named `README.md` and paste the content.
 
-4. **Stage and Commit the README:**
-   - Stage the new `README.md` file:
+3. **Save Both Files:**
+   - Save the changes to both files.
+
+4. **Stage and Commit the Files:**
+   - Stage the new `LICENSE` and updated `README.md` files:
      ```bash
-     git add README.md
+     git add LICENSE README.md
      ```
    - Commit the changes:
      ```bash
-     git commit -m "Add README file"
+     git commit -m "Add LICENSE and update README with app details"
      ```
 
 5. **Push to GitHub:**
@@ -85,6 +86,3 @@ For any inquiries or feedback, please reach out to [Elijah Mwangi Mutiso(Ellines
      ```bash
      git push origin main
      ```
-
-This `README.md` will provide a clear overview of your project, making it easier for others to understand and contribute to your Lmar Learn app!
-
