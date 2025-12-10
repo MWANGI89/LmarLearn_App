@@ -133,15 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          // Back Button
-          SafeArea(
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
-          ),
+          // Center the form and adjust size
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -243,6 +235,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
+
+                      // Back Button Below the Login Button
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Back Home',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

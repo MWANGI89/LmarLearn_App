@@ -110,24 +110,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
 
-          // Back button
-          SafeArea(
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-            ),
-          ),
-
+          // Center the form and adjust size
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 40),
               child: Card(
                 elevation: 16,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(28),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -141,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Text(
                         "Create Account",
                         style: TextStyle(
-                          fontSize: isMobile ? 24 : 30,
+                          fontSize: isMobile ? 22 : 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.blueAccent,
                         ),
@@ -150,9 +143,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       const Text(
                         "Register to access your dashboard",
-                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 28),
 
                       Form(
                         key: _formKey,
@@ -170,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               validator: (val) =>
                                   val!.isEmpty ? 'Enter your name' : null,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             TextFormField(
                               controller: _emailController,
@@ -185,7 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   val!.isEmpty ? 'Enter email' : null,
                               keyboardType: TextInputType.emailAddress,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             TextFormField(
                               controller: _passwordController,
@@ -200,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               validator: (val) =>
                                   val!.length < 6 ? 'Password must be at least 6 characters' : null,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             DropdownButtonFormField<String>(
                               initialValue: _role,
@@ -222,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                               },
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             TextFormField(
                               decoration: InputDecoration(
@@ -234,7 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               onChanged: (val) => _schoolName = val,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             TextFormField(
                               decoration: InputDecoration(
@@ -247,11 +240,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onChanged: (val) => _schoolId = val,
                             ),
 
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 20),
 
                             SizedBox(
                               width: double.infinity,
-                              height: 50,
+                              height: 45,
                               child: _loading
                                   ? const Center(child: CircularProgressIndicator())
                                   : ElevatedButton(
@@ -264,9 +257,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       child: const Text(
                                         'Register',
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     ),
+                            ),
+
+                            // Back button placed below the register button
+                            const SizedBox(height: 20),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Back Home',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
                             ),
                           ],
                         ),
