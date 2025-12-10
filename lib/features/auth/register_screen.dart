@@ -113,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // Center the form and adjust size
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
               child: Card(
                 elevation: 16,
                 shape: RoundedRectangleBorder(
