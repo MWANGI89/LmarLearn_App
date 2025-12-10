@@ -120,6 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     final isMobile = size.width < 600;
 
+    double buttonWidth = size.width * 0.8; // Set button width to 80% of screen width
+    double buttonHeight = isMobile ? 50.0 : 60.0; // Adjust height based on screen size
+    double fontSize = isMobile ? 16.0 : 18.0; // Adjust font size based on screen size
+
     return Scaffold(
       body: Stack(
         children: [
@@ -211,8 +215,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 16),
                             SizedBox(
-                              width: double.infinity,
-                              height: 50,
+                              width: buttonWidth, // Set dynamic width
+                              height: buttonHeight, // Set dynamic height
                               child: _loading
                                   ? const Center(
                                       child: CircularProgressIndicator(),
@@ -226,9 +230,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                               BorderRadius.circular(12),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'Login',
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: fontSize), // Set dynamic font size
                                       ),
                                     ),
                             ),
@@ -240,8 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 20),
 
                       SizedBox(
-                        width: double.infinity,
-                        height: 50,
+                        width: buttonWidth, // Set dynamic width
+                        height: buttonHeight, // Set dynamic height
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pushReplacementNamed(context, '/');
@@ -252,9 +256,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Back Home',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: fontSize), // Set dynamic font size
                           ),
                         ),
                       ),
