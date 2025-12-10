@@ -7,10 +7,10 @@ class AdminSection extends StatefulWidget {
   final String schoolId;
 
   const AdminSection({
-    Key? key,
+    Key? key, // Use key as a super parameter
     required this.adminId,
     required this.schoolId,
-  }) : super(key: key);
+  }) : super(key: key); // Pass key to the super constructor
 
   @override
   State<AdminSection> createState() => _AdminSectionState();
@@ -89,6 +89,7 @@ class _AdminSectionState extends State<AdminSection> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: actions.length,
+        // ignore: unnecessary_underscores
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final action = actions[index];

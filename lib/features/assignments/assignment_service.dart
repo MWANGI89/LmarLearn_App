@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'assignment.dart';
 
 class AssignmentService {
   final CollectionReference assignmentsRef =
       FirebaseFirestore.instance.collection('assignments');
+
+  // Create a logger instance
+  final Logger logger = Logger();
 
   // Create new assignment
   Future<void> addAssignment(Assignment assignment) async {
@@ -32,7 +36,7 @@ class AssignmentService {
         return Assignment.fromMap(doc.id, data);
       }).toList();
     } catch (e) {
-      print("Error fetching assignments for student: $e");
+      logger.e("Error fetching assignments for student: $e"); // Use logger for error
       return [];
     }
   }
@@ -47,7 +51,7 @@ class AssignmentService {
         'submission': submissionText,
       });
     } catch (e) {
-      print("Error submitting assignment: $e");
+      logger.e("Error submitting assignment: $e"); // Use logger for error
     }
   }
 }
