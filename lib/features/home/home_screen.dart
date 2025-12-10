@@ -10,7 +10,7 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice shall be included in all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -42,6 +42,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   int hoverIndex = -1;
+  String? userName;
 
   final List<Map<String, String>> heroSlides = [
     {
@@ -76,6 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userData == null) return;
 
       final role = (userData['role'] ?? '').toString().toLowerCase();
+      setState(() {
+        userName = userData['name'] ?? user.email?.split('@')[0] ?? 'User'; // Fallback to email username
+      });
 
       final appUser = AppUser(
         id: user.uid,
@@ -159,6 +163,45 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _animatedCourseButton(VoidCallback onPressed, String text, {Color? color}) {
+    return StatefulBuilder(
+      builder: (context, setLocalState) {
+        bool isHovered = false;
+        return MouseRegion(
+          onEnter: (_) => setLocalState(() => isHovered = true),
+          onExit: (_) => setLocalState(() => isHovered = false),
+          child: AnimatedScale(
+            scale: isHovered ? 1.05 : 1.0,
+            duration: const Duration(milliseconds: 180),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              decoration: BoxDecoration(
+                boxShadow: isHovered
+                    ? [
+                        BoxShadow(
+                          color: Colors.blue.withAlpha(64),
+                          blurRadius: 18,
+                          spreadRadius: 2,
+                        )
+                      ]
+                    : [],
+              ),
+              child: ElevatedButton(
+                onPressed: onPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color ?? Colors.blueAccent,
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: Text(text, style: const TextStyle(color: Colors.white)),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -168,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          /// NAVBAR
+          // NAVBAR
           SliverAppBar(
             pinned: true,
             backgroundColor: Colors.white,
@@ -224,22 +267,40 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: const Text('Sign Up'),
                             ),
                           ] else ...[
-                            Text(
-                              'Hello, ${user.email}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(width: 5),
-                            OutlinedButton(
-                              onPressed: () async {
-                                await _authService.logout();
-                                if (mounted) setState(() {});
+                            PopupMenuButton<String>(
+                              onSelected: (String value) {
+                                if (value == 'logout') {
+                                  _authService.logout();
+                                  setState(() {});
+                                } else if (value == 'dashboard') {
+                                  Navigator.pushNamed(context, '/dashboard');
+                                }
                               },
-                              child: const Text('Logout'),
-                            ),
-                            const SizedBox(width: 5),
-                            OutlinedButton(
-                              onPressed: () => Navigator.pushNamed(context, '/dashboard'),
-                              child: const Text('Dashboard'),
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  PopupMenuItem<String>(
+                                    value: 'dashboard',
+                                    child: Text('Dashboard'),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'profile',
+                                    child: Text('Profile'),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'logout',
+                                    child: Text('Logout'),
+                                  ),
+                                ];
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Hello, ${userName ?? 'User'}',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const Icon(Icons.arrow_drop_down),
+                                ],
+                              ),
                             ),
                           ],
                         ],
@@ -251,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          /// HERO SLIDER
+          // HERO SLIDER
           SliverToBoxAdapter(
             child: HeroSlider(
               slides: heroSlides,
@@ -260,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          /// MEDICAL COURSES GRID
+          // MEDICAL COURSES GRID
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -269,17 +330,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const Text(
                     "Available Medical Courses",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
                   LayoutBuilder(
                     builder: (context, constraints) {
                       double width = constraints.maxWidth;
                       int crossAxisCount = 5;
-                      if (width < 500) crossAxisCount = 1;
-                      else if (width < 800) crossAxisCount = 2;
-                      else if (width < 1100) crossAxisCount = 3;
-                      else if (width < 1400) crossAxisCount = 4;
+                      if (width < 500) {crossAxisCount = 1;
+                        crossAxisCount = 1;
+                      } else if (width < 800) {
+                        crossAxisCount = 2;
+                      } else if (width < 1100) {
+                        crossAxisCount = 3;
+                      } else if (width < 1400) {
+                        crossAxisCount = 4;
+                      }
                       crossAxisCount = crossAxisCount.clamp(1, 5);
 
                       return AnimatedSwitcher(
@@ -304,8 +373,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Transform.scale(
                                   scale: scale,
                                   child: MouseRegion(
-                                    onEnter: (_) { if (mounted) setState(() => hoverIndex = index); },
-                                    onExit: (_) { if (mounted) setState(() => hoverIndex = -1); },
+                                    onEnter: (_) { if (mounted) setState(() { hoverIndex = index; }); },
+                                    onExit: (_) { if (mounted) setState(() { hoverIndex = -1; }); },
                                     child: AnimatedScale(
                                       scale: hoverIndex == index ? 1.05 : 1.0,
                                       duration: const Duration(milliseconds: 180),
@@ -315,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           boxShadow: hoverIndex == index
                                               ? [
                                                   BoxShadow(
-                                                    color: Colors.blue.withValues(alpha: 0.25),
+                                                    color: Colors.blue.withAlpha(64),
                                                     blurRadius: 18,
                                                     spreadRadius: 2,
                                                   )
@@ -339,8 +408,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
+                    child: _animatedCourseButton(
+                      () {
                         hoverIndex = -1;
                         Navigator.push(
                           context,
@@ -349,10 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       },
-                      child: const Text(
-                        "View All Courses",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                      "View All Courses",
                     ),
                   ),
                 ],
@@ -360,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          /// FLOATING BUTTONS
+          // FLOATING BUTTONS
           SliverToBoxAdapter(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -369,21 +435,21 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blueAccent.withValues(alpha: 0.35),
-                    Colors.lightBlue.withValues(alpha: 0.35),
-                    Colors.blue.withValues(alpha: 0.3),
+                    Colors.blueAccent.withOpacity(0.35),
+                    Colors.lightBlue.withOpacity(0.35),
+                    Colors.blue.withOpacity(0.3),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
-                  color: Colors.blueAccent.withValues(alpha: 0.7),
+                  color: Colors.blueAccent.withOpacity(0.7),
                   width: 1.4,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withValues(alpha: 0.45),
+                    color: Colors.blueAccent.withOpacity(0.45),
                     blurRadius: 25,
                     spreadRadius: 3,
                   ),
@@ -422,17 +488,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          /// LEGAL FOOTER
+          // LEGAL FOOTER
           SliverToBoxAdapter(child: _buildLegalFooter()),
         ],
       ),
     );
   }
 }
-
 /// Extension to replace deprecated .withOpacity()
-extension ColorExtension on Color {
-  Color withValues({required double alpha}) {
-    return withAlpha((alpha * 255).round());
+extension ColorAlphaExtension on Color {
+  Color withAlpha(double alpha) {
+    assert(alpha >= 0.0 && alpha <= 1.0, 'Alpha must be between 0.0 and 1.0');
+    return this.withAlpha((alpha * 255).round());
   }
 }
