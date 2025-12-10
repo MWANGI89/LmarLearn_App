@@ -7,10 +7,10 @@ class AdminSection extends StatefulWidget {
   final String schoolId;
 
   const AdminSection({
-    super.key,
+    Key? key,
     required this.adminId,
     required this.schoolId,
-  });
+  }) : super(key: key);
 
   @override
   State<AdminSection> createState() => _AdminSectionState();
@@ -106,7 +106,7 @@ class _AdminSectionState extends State<AdminSection> {
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 8)
+                  BoxShadow(color: Colors.black12, blurRadius: 8),
                 ],
               ),
               child: Column(
@@ -155,8 +155,8 @@ class _AdminSectionState extends State<AdminSection> {
         final user = users[index];
         return Card(
           elevation: 4,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
