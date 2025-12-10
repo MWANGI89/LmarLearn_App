@@ -17,28 +17,26 @@ class AdminSection extends StatefulWidget {
 }
 
 class _AdminSectionState extends State<AdminSection> {
-  final AuthService _authService = AuthService();
+  final AuthService authService = AuthService();
   List<AppUser> users = [];
   bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUsers();
+    loadUsers();
   }
 
-  Future<void> _loadUsers() async {
+  Future<void> loadUsers() async {
     try {
-      users = await _authService.getUsersBySchoolAndRoles(
+      users = await authService.getUsersBySchoolAndRoles(
         widget.schoolId,
         ['student', 'lecturer', 'moderator', 'nursingstaff'],
       );
     } catch (e) {
       debugPrint('Error loading users: $e');
     } finally {
-      if (mounted) {
-        setState(() => loading = false);
-      }
+      if (mounted) setState(() => loading = false);
     }
   }
 
@@ -56,33 +54,33 @@ class _AdminSectionState extends State<AdminSection> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                _buildActionCards(context),
+                buildActionCards(context),
                 const SizedBox(height: 16),
-                _buildUserGrid(),
+                buildUserGrid(),
               ],
             ),
           );
   }
 
-  Widget _buildActionCards(BuildContext context) {
+  Widget buildActionCards(BuildContext context) {
     final actions = [
       {
         'title': 'Register User',
         'icon': Icons.person_add,
         'colors': [Color(0xFF3A9FF2), Color(0xFF1A73E8)],
-        'onTap': () => Navigator.pushNamed(context, '/register')
+        'onTap': () => Navigator.pushNamed(context, '/register'),
       },
       {
         'title': 'Manage Courses',
         'icon': Icons.book,
         'colors': [Color(0xFFFFA726), Color(0xFFF57C00)],
-        'onTap': () => Navigator.pushNamed(context, '/admin-courses')
+        'onTap': () => Navigator.pushNamed(context, '/admin-courses'),
       },
       {
         'title': 'Delegate Rights',
         'icon': Icons.security,
         'colors': [Color(0xFFAB47BC), Color(0xFF8E24AA)],
-        'onTap': () => Navigator.pushNamed(context, '/delegation')
+        'onTap': () => Navigator.pushNamed(context, '/delegation'),
       },
     ];
 
@@ -107,17 +105,25 @@ class _AdminSectionState extends State<AdminSection> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 8)
+                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(action['icon'] as IconData, color: Colors.white, size: 28),
+                  Icon(
+                    action['icon'] as IconData,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   const SizedBox(height: 8),
-                  Text(action['title'] as String,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(
+                    action['title'] as String,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),
@@ -127,7 +133,7 @@ class _AdminSectionState extends State<AdminSection> {
     );
   }
 
-  Widget _buildUserGrid() {
+  Widget buildUserGrid() {
     if (users.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(20),
@@ -169,15 +175,17 @@ class _AdminSectionState extends State<AdminSection> {
                         fontWeight: FontWeight.bold, fontSize: 14)),
                 const SizedBox(height: 4),
                 Text('${user.role} • ${user.email}',
-                    style:
-                        TextStyle(fontSize: 12, color: Colors.grey[600])),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600])),
                 const Spacer(),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: IconButton(
                     icon: const Icon(Icons.edit, color: Colors.orange),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/edit-user', arguments: user),
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      '/edit-user',
+                      arguments: user,
+                    ),
                   ),
                 ),
               ],

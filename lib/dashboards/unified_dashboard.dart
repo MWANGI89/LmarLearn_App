@@ -1,33 +1,11 @@
-/*
- * MIT License
- * 
- * Copyright (c) 2025 Elijah Mwangi Mutiso (Founder of Ellines Tech)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 import 'package:flutter/material.dart';
 import '../models/app_user.dart';
 import '../features/courses/course_service.dart';
 import '../features/assignments/assignment_service.dart';
 import '../features/courses/course.dart';
 import '../features/assignments/assignment.dart';
-import 'superadmin_dashboard.dart';
-import 'admin_section.dart';
+import '../dashboards/superadmin_dashboard.dart';
+import '../dashboards/admin_section.dart';
 
 class UnifiedDashboard extends StatefulWidget {
   final AppUser loggedUser;
@@ -55,15 +33,15 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
 
   Future<void> _loadData() async {
     final user = widget.loggedUser;
+
     try {
       final allCourses = await _courseService.getAllCourses();
       List<Assignment> assignmentList = [];
 
       if (user.role == 'student') {
-        assignmentList = await _assignmentService.getAssignmentsForStudent(user.id);
+        assignmentList =
+            await _assignmentService.getAssignmentsForStudent(user.id);
       }
-
-      if (!mounted) return;
 
       setState(() {
         courses = user.role == 'lecturer'
@@ -73,8 +51,8 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
         _isLoading = false;
       });
     } catch (e) {
+      setState(() => _isLoading = false);
       debugPrint("Error loading data: $e");
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -88,20 +66,17 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
       );
     }
 
-    // SuperAdmin redirects to their dashboard
     if (user.role == 'superadmin') {
       return SuperAdminDashboard(superAdminUser: user);
     }
 
-    // Admin Dashboard
     if (user.role == 'admin') {
       return Scaffold(
         appBar: AppBar(title: const Text("Admin Dashboard")),
-        body: AdminSection(adminId: user.id, schoolId: user.schoolId),
+        body: AdminSection(adminId: user.id, schoolId: ''),
       );
     }
 
-    // Student or Lecturer
     return Scaffold(
       body: Column(
         children: [
@@ -124,56 +99,59 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
     );
   }
 
-  Widget _buildHeader() => Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF1A73E8), Color(0xFF0D47A1)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget _buildHeader() {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF1A73E8), Color(0xFF0D47A1)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.school, color: Colors.white, size: 28),
           ),
-          boxShadow: const [
-            BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))
-          ],
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Your Learning Journey',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
-              child: const Icon(Icons.school, color: Colors.white, size: 28),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Your Learning Journey',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Continue growing and achieving your goals',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-              ],
-            ),
-            const Spacer(),
-            const CircleAvatar(
-              radius: 24,
-              backgroundColor: Colors.white24,
-              child: Icon(Icons.person, color: Colors.white, size: 24),
-            ),
-          ],
-        ),
-      );
+              Text(
+                'Continue growing and achieving your goals',
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+            ],
+          ),
+          const Spacer(),
+          const CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.white24,
+            child: Icon(Icons.person, color: Colors.white, size: 24),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildStatsCard(String role) {
     int completedCourses = courses.where((c) => c.isFeatured).length;
-    int pendingAssignments = assignments.where((a) => a.submission?.isEmpty ?? true).length;
+    int pendingAssignments =
+        assignments.where((a) => a.submission?.isEmpty ?? true).length;
 
     return Container(
       margin: const EdgeInsets.all(20),
@@ -203,39 +181,45 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
     );
   }
 
-  Widget _buildStatItem(String title, String count, IconData icon, Color color) => Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.9), color.withOpacity(0.7)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget _buildStatItem(String title, String count, IconData icon, Color color) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color.withValues(alpha: 0.9), color.withValues(alpha: 0.6)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
+      ),
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: Colors.white, size: 24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: const TextStyle(color: Colors.white70, fontSize: 11)),
+              Text(count,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)),
+            ],
           ),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
-        ),
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Colors.white, size: 24),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: const TextStyle(color: Colors.white70, fontSize: 11)),
-                Text(count,
-                    style: const TextStyle(
-                        color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ],
-        ),
-      );
+        ],
+      ),
+    );
+  }
 
   Widget _buildTabNavigation() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+          color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
           _buildTabButton('📚 Courses', 0),
@@ -265,10 +249,12 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
   }
 
   Widget _buildCoursesTab(String role) {
-    if (courses.isEmpty) return const Padding(
-      padding: EdgeInsets.all(40),
-      child: Center(child: Text('No courses yet')),
-    );
+    if (courses.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(40),
+        child: Center(child: Text('No courses yet')),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -282,7 +268,9 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: courses.length,
-        itemBuilder: (context, index) => _buildCourseCard(courses[index], index),
+        itemBuilder: (context, index) {
+          return _buildCourseCard(courses[index], index);
+        },
       ),
     );
   }
@@ -308,8 +296,14 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
               ),
               child: course.imageUrl != null
-                  ? Image.network(course.imageUrl!, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.image, size: 48, color: Colors.white30)))
-                  : const Center(child: Icon(Icons.school, size: 48, color: Colors.white30)),
+                  ? Image.network(course.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, st) => const Center(
+                          child: Icon(Icons.image,
+                              size: 48, color: Colors.white30)))
+                  : const Center(
+                      child: Icon(Icons.school,
+                          size: 48, color: Colors.white30)),
             ),
           ),
           Expanded(
@@ -320,7 +314,8 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(course.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 13),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 4),
@@ -340,7 +335,8 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1A73E8),
                         minimumSize: const Size(double.infinity, 28)),
-                    child: const Text('Continue Learning', style: TextStyle(fontSize: 11)),
+                    child: const Text('Continue Learning',
+                        style: TextStyle(fontSize: 11)),
                   ),
                 ],
               ),
@@ -352,10 +348,12 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
   }
 
   Widget _buildAssignmentsTab(String role) {
-    if (assignments.isEmpty) return const Padding(
-      padding: EdgeInsets.all(40),
-      child: Center(child: Text('No assignments yet')),
-    );
+    if (assignments.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(40),
+        child: Center(child: Text('No assignments yet')),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -391,10 +389,12 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(assignment.title,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14)),
                         const SizedBox(height: 4),
                         Text(assignment.description,
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            style:
+                                TextStyle(fontSize: 12, color: Colors.grey[600]),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         const SizedBox(height: 8),
@@ -409,17 +409,22 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
                   const SizedBox(width: 16),
                   isSubmitted
                       ? Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                              color: Colors.green[100], borderRadius: BorderRadius.circular(8)),
+                              color: Colors.green[100],
+                              borderRadius: BorderRadius.circular(8)),
                           child: const Text('✓ Done',
                               style: TextStyle(
-                                  color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12)),
                         )
                       : ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange, foregroundColor: Colors.white),
+                              backgroundColor: Colors.orange,
+                              foregroundColor: Colors.white),
                           child: const Text('Submit'),
                         ),
                 ],
@@ -429,5 +434,12 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
         }).toList(),
       ),
     );
+  }
+}
+
+/// Extension to replace deprecated .withOpacity()
+extension ColorExtension on Color {
+  Color withValues({required double alpha}) {
+    return withAlpha((alpha * 255).round());
   }
 }

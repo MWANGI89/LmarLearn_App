@@ -114,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SafeArea(
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
             ),
           ),
 

@@ -20,16 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/auth/auth_service.dart';
 import '../../models/app_user.dart';
-import '../../features/courses/course.dart';
 import '../../widgets/hover_button.dart';
 import '../../widgets/course_card.dart' as course_card;
 import '../courses/course_list_screen.dart';
 import '../../widgets/hero_slider.dart';
+import '../courses/medical_courses.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +41,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
+  int hoverIndex = -1;
 
   final List<Map<String, String>> heroSlides = [
     {
@@ -59,107 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
-  final List<Course> medicalCourses = [
-    Course(
-        id: '1',
-        title: 'Basic Nursing',
-        description: 'Learn fundamentals of nursing.',
-        createdBy: 'Admin',
-        imageUrl: 'img-2.jpg',
-        level: 'Beginner',
-        enrollmentCount: 120),
-    Course(
-        id: '2',
-        title: 'Anatomy & Physiology',
-        description: 'Deep dive into human anatomy.',
-        createdBy: 'Admin',
-        imageUrl: 'images.jpg',
-        level: 'Intermediate',
-        enrollmentCount: 95),
-    Course(
-        id: '3',
-        title: 'Medical Ethics',
-        description: 'Understand ethics in medical practice.',
-        createdBy: 'Admin',
-        imageUrl: 'premium.jpg',
-        level: 'Advanced',
-        enrollmentCount: 70),
-    Course(
-        id: '4',
-        title: 'Pharmacology Basics',
-        description: 'Introduction to pharmacology.',
-        createdBy: 'Admin',
-        imageUrl: 'maxresdefault.jpg',
-        level: 'Beginner',
-        enrollmentCount: 85),
-    Course(
-        id: '5',
-        title: 'Patient Care Techniques',
-        description: 'Best practices for patient care.',
-        createdBy: 'Admin',
-        imageUrl: 'maxresdefault.jpg',
-        level: 'Intermediate',
-        enrollmentCount: 110),
-    Course(
-        id: '6',
-        title: 'Infection Control',
-        description: 'Methods to prevent infections in healthcare.',
-        createdBy: 'Admin',
-        imageUrl: '7830105-612x612.jpg',
-        level: 'Advanced',
-        enrollmentCount: 60),
-    Course(
-        id: '7',
-        title: 'Emergency Nursing',
-        description: 'Handling emergencies in nursing.',
-        createdBy: 'Admin',
-        imageUrl: 'img-2.jpg',
-        level: 'Advanced',
-        enrollmentCount: 45),
-    Course(
-        id: '8',
-        title: 'Pediatric Nursing',
-        description: 'Caring for children in medical settings.',
-        createdBy: 'Admin',
-        imageUrl: 'images.jpg',
-        level: 'Intermediate',
-        enrollmentCount: 75),
-    Course(
-        id: '9',
-        title: 'Geriatric Care',
-        description: 'Specialized care for the elderly.',
-        createdBy: 'Admin',
-        imageUrl: 'premium.jpg',
-        level: 'Beginner',
-        enrollmentCount: 50),
-    Course(
-        id: '10',
-        title: 'Mental Health Nursing',
-        description: 'Supporting mental health in nursing practice.',
-        createdBy: 'Admin',
-        imageUrl: 'maxresdefault.jpg',
-        level: 'Advanced',
-        enrollmentCount: 40), 
-    Course(
-        id: '11',
-        title: 'Surgical Nursing',
-        description: 'Nursing care in surgical settings.',
-        createdBy: 'Admin',
-        imageUrl: '7830105-612x612.jpg',
-        level: 'Intermediate',
-        enrollmentCount: 55),
-    Course(
-        id: '12',
-        title: 'Community Health Nursing',
-        description: 'Promoting health in communities.',
-        createdBy: 'Admin',
-        imageUrl: 'img-2.jpg',
-        level: 'Beginner',
-        enrollmentCount: 65),
-  ];
-
-  int hoverIndex = -1;
-
   @override
   void initState() {
     super.initState();
@@ -168,15 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _checkUserRedirect() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return;
-    }
+    if (user == null) return;
 
     try {
       final userData = await _authService.getUserData(user.uid);
-      if (userData == null) {
-        return;
-      }
+      if (userData == null) return;
 
       final role = (userData['role'] ?? '').toString().toLowerCase();
 
@@ -252,15 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const Spacer(),
           Row(
             children: [
-              HoverButton(
-                text: "Terms of Service",
-                onPressed: () {},
-              ),
+              HoverButton(text: "Terms of Service", onPressed: () {}),
               const SizedBox(width: 12),
-              HoverButton(
-                text: "Privacy Policy",
-                onPressed: () {},
-              ),
+              HoverButton(text: "Privacy Policy", onPressed: () {}),
             ],
           ),
         ],
@@ -277,10 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Navbar
+          /// NAVBAR
           SliverAppBar(
             pinned: true,
             backgroundColor: Colors.white,
+            automaticallyImplyLeading: false,
             expandedHeight: 100,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -289,10 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      Image.asset(
-                        'assets/logo/Lmar_Logo_icon-nobg.png',
-                        height: 40,
-                      ),
+                      Image.asset('assets/logo/Lmar_Logo_icon-nobg.png', height: 40),
                       const SizedBox(width: 9),
                       const Text(
                         'Lmar Learn',
@@ -309,11 +198,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(context, '/'),
+                            onPressed: () => Navigator.pushReplacementNamed(context, '/'),
                             child: const Text('Home'),
                           ),
                           ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(context, '/courses'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CourseListScreen(courses: medicalCourses),
+                                ),
+                              );
+                            },
                             child: const Text('Courses'),
                           ),
                           const SizedBox(width: 5),
@@ -330,17 +226,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           ] else ...[
                             Text(
                               'Hello, ${user.email}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(width: 5),
                             OutlinedButton(
                               onPressed: () async {
                                 await _authService.logout();
-                                if (mounted) {
-                                  setState(() {});
-                                }
+                                if (mounted) setState(() {});
                               },
                               child: const Text('Logout'),
                             ),
@@ -359,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Hero Slider
+          /// HERO SLIDER
           SliverToBoxAdapter(
             child: HeroSlider(
               slides: heroSlides,
@@ -368,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Medical Courses Grid
+          /// MEDICAL COURSES GRID
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -384,10 +276,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, constraints) {
                       double width = constraints.maxWidth;
                       int crossAxisCount = 5;
-                      if (width < 500) { crossAxisCount = 1; }
-                      else if (width < 800) { crossAxisCount = 2; }
-                      else if (width < 1100) { crossAxisCount = 3; }
-                      else if (width < 1400) { crossAxisCount = 4; }
+                      if (width < 500) crossAxisCount = 1;
+                      else if (width < 800) crossAxisCount = 2;
+                      else if (width < 1100) crossAxisCount = 3;
+                      else if (width < 1400) crossAxisCount = 4;
                       crossAxisCount = crossAxisCount.clamp(1, 5);
 
                       return AnimatedSwitcher(
@@ -412,18 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Transform.scale(
                                   scale: scale,
                                   child: MouseRegion(
-                                    onEnter: (_) {
-                                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                                        if (!mounted) return;
-                                        setState(() => hoverIndex = index);
-                                      });
-                                    },
-                                    onExit: (_) {
-                                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                                        if (!mounted) return;
-                                        setState(() => hoverIndex = -1);
-                                      });
-                                    },
+                                    onEnter: (_) { if (mounted) setState(() => hoverIndex = index); },
+                                    onExit: (_) { if (mounted) setState(() => hoverIndex = -1); },
                                     child: AnimatedScale(
                                       scale: hoverIndex == index ? 1.05 : 1.0,
                                       duration: const Duration(milliseconds: 180),
@@ -433,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           boxShadow: hoverIndex == index
                                               ? [
                                                   BoxShadow(
-                                                    color: Colors.blue.withAlpha((0.25 * 255).round()),
+                                                    color: Colors.blue.withValues(alpha: 0.25),
                                                     blurRadius: 18,
                                                     spreadRadius: 2,
                                                   )
@@ -454,21 +336,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
-
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        setState(() => hoverIndex = -1);
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CourseListScreen(courses: medicalCourses),
-                            ),
-                          );
-                        });
+                        hoverIndex = -1;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CourseListScreen(courses: medicalCourses),
+                          ),
+                        );
                       },
                       child: const Text(
                         "View All Courses",
@@ -481,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Floating Buttons
+          /// FLOATING BUTTONS
           SliverToBoxAdapter(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -490,21 +369,21 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blueAccent.withAlpha((0.35 * 255).round()),
-                    Colors.lightBlue.withAlpha((0.35 * 255).round()),
-                    Colors.blue.withAlpha((0.30 * 255).round()),
+                    Colors.blueAccent.withValues(alpha: 0.35),
+                    Colors.lightBlue.withValues(alpha: 0.35),
+                    Colors.blue.withValues(alpha: 0.3),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
-                  color: Colors.blueAccent.withAlpha((0.7 * 255).round()),
+                  color: Colors.blueAccent.withValues(alpha: 0.7),
                   width: 1.4,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withAlpha((0.45 * 255).round()),
+                    color: Colors.blueAccent.withValues(alpha: 0.45),
                     blurRadius: 25,
                     spreadRadius: 3,
                   ),
@@ -514,36 +393,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/'),
+                    onPressed: () => Navigator.pushReplacementNamed(context, '/'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     child: const Text("Home", style: TextStyle(color: Colors.white)),
                   ),
                   ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/sign-up'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CourseListScreen(courses: medicalCourses),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.tealAccent.shade700,
+                      backgroundColor: Colors.tealAccent,
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
-                    child: const Text("Sign Up", style: TextStyle(color: Colors.white)),
+                    child: const Text("Courses", style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
             ),
           ),
 
-          // Legal Footer
+          /// LEGAL FOOTER
           SliverToBoxAdapter(child: _buildLegalFooter()),
         ],
       ),
     );
+  }
+}
+
+/// Extension to replace deprecated .withOpacity()
+extension ColorExtension on Color {
+  Color withValues({required double alpha}) {
+    return withAlpha((alpha * 255).round());
   }
 }
