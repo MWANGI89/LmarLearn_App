@@ -185,7 +185,7 @@ class _UnifiedDashboardState extends State<UnifiedDashboard> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color.withOpacity(0.9), color.withOpacity(0.6)],
+          colors: [color.withValues(alpha: 0.9), color.withValues(alpha: 0.6)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

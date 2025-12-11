@@ -164,41 +164,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _animatedCourseButton(VoidCallback onPressed, String text, {Color? color}) {
-    return StatefulBuilder(
-      builder: (context, setLocalState) {
-        bool isHovered = false;
-        return MouseRegion(
-          onEnter: (_) => setLocalState(() => isHovered = true),
-          onExit: (_) => setLocalState(() => isHovered = false),
-          child: AnimatedScale(
-            scale: isHovered ? 1.05 : 1.0,
-            duration: const Duration(milliseconds: 180),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              decoration: BoxDecoration(
-                boxShadow: isHovered
-                    ? [
-                        BoxShadow(
-                          color: (color ?? Colors.blueAccent).withAlpha(64),
-                          blurRadius: 12,
-                          spreadRadius: 1,
-                        )
-                      ]
-                    : [],
-              ),
-              child: ElevatedButton(
-                onPressed: onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: color ?? Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                ),
-                child: Text(text, style: const TextStyle(color: Colors.white)),
-              ),
-            ),
-          ),
-        );
-      },
+    return MouseRegion(
+      onEnter: (_) {},
+      onExit: (_) {},
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color ?? Colors.blueAccent,
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        child: Text(text, style: const TextStyle(color: Colors.white)),
+      ),
     );
   }
 
@@ -340,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, constraints) {
                       double width = constraints.maxWidth;
                       int crossAxisCount = 5;
-                      if (width < 500) {crossAxisCount = 1;
+                      if (width < 500) {
                         crossAxisCount = 1;
                       } else if (width < 800) {
                         crossAxisCount = 2;
@@ -349,7 +326,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       } else if (width < 1400) {
                         crossAxisCount = 4;
                       }
-                      crossAxisCount = crossAxisCount.clamp(1, 5);
 
                       return AnimatedSwitcher(
                         duration: const Duration(milliseconds: 500),
@@ -384,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           boxShadow: hoverIndex == index
                                               ? [
                                                   BoxShadow(
-                                                    color: Colors.blue.withAlpha(64),
+                                                    color: Colors.blue.withValues(alpha: 0.25),
                                                     blurRadius: 18,
                                                     spreadRadius: 2,
                                                   )
@@ -410,7 +386,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.centerRight,
                     child: _animatedCourseButton(
                       () {
-                        hoverIndex = -1;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -435,21 +410,21 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blueAccent.withOpacity(0.35),
-                    Colors.lightBlue.withOpacity(0.35),
-                    Colors.blue.withOpacity(0.3),
+                    Colors.blueAccent.withValues(alpha: 0.35),
+                    Colors.lightBlue.withValues(alpha: 0.35),
+                    Colors.blue.withValues(alpha: 0.3),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
-                  color: Colors.blueAccent.withOpacity(0.7),
+                  color: Colors.blueAccent.withValues(alpha: 0.7),
                   width: 1.4,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.45),
+                    color: Colors.blueAccent.withValues(alpha: 0.45),
                     blurRadius: 25,
                     spreadRadius: 3,
                   ),
@@ -495,10 +470,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-/// Extension to replace deprecated .withOpacity()
-extension ColorAlphaExtension on Color {
-  Color withAlpha(double alpha) {
-    assert(alpha >= 0.0 && alpha <= 1.0, 'Alpha must be between 0.0 and 1.0');
-    return this.withAlpha((alpha * 255).round());
-  }
-}
+
