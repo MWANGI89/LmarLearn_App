@@ -7,10 +7,10 @@ class AdminSection extends StatefulWidget {
   final String schoolId;
 
   const AdminSection({
-    Key? key, // Use key as a super parameter
+    super.key, // Use key as a super parameter
     required this.adminId,
     required this.schoolId,
-  }) : super(key: key); // Pass key to the super constructor
+  }); // Pass key to the super constructor
 
   @override
   State<AdminSection> createState() => _AdminSectionState();

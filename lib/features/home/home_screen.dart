@@ -179,9 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 boxShadow: isHovered
                     ? [
                         BoxShadow(
-                          color: Colors.blue.withAlpha(64),
-                          blurRadius: 18,
-                          spreadRadius: 2,
+                          color: (color ?? Colors.blueAccent).withAlpha(64),
+                          blurRadius: 12,
+                          spreadRadius: 1,
                         )
                       ]
                     : [],
